@@ -1,11 +1,17 @@
-const express = require("express");
-const func = require("../../models/contacts");
+import express from "express";
+import {
+    listContacts,
+    getContactById,
+    removeContact,
+    addContact,
+    updateContact,
+} from "../../models/contacts.mjs";
 
 const router = express.Router();
 
 router.get("/", async (req, res, next) => {
     try {
-        const data = await func.listContacts();
+        const data = await listContacts();
         res.json({
             status: "success",
             code: 200,
@@ -13,18 +19,18 @@ router.get("/", async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
 router.get("/:contactId", async (req, res, next) => {
     const { contactId } = req.params;
+
     try {
-        const data = await func.getContactById(contactId);
+        const data = await getContactById(contactId);
 
         if (data.length === 0) {
             res.json({
-                status: "ERROR",
+                status: "error",
                 code: 404,
                 message: "Not found",
             });
@@ -43,14 +49,18 @@ router.get("/:contactId", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-    const body = { name: "irka", email: "irka@mail.com", phone: "34243423434" };
+    const body = {
+        name: "Irmina",
+        email: "",
+        phone: "6287468957968735763246",
+    };
 
     try {
-        const result = await func.addContact(body);
+        const result = await addContact(body);
 
         if (result === 400) {
             res.send({
-                status: "ERROR",
+                status: "error",
                 code: 400,
                 message: "missing required name - field",
             });
@@ -65,17 +75,14 @@ router.post("/", async (req, res, next) => {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
 router.delete("/:contactId", async (req, res, next) => {
     const { contactId } = req.params;
 
-    const numericContactId = parseInt(contactId);
-
     try {
-        const result = await func.removeContact(numericContactId);
+        const result = await removeContact(contactId);
 
         if (result === 200) {
             res.json({
@@ -87,19 +94,49 @@ router.delete("/:contactId", async (req, res, next) => {
 
         if (result === 404) {
             res.json({
-                status: "ERROR",
+                status: "error",
                 code: 404,
                 message: "Not found",
             });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
 router.put("/:contactId", async (req, res, next) => {
-    res.json({ message: "template message" });
+    const { contactId } = req.params;
+    const body = { name: "Darek", email: "", phone: "" };
+
+    try {
+        const result = await updateContact(contactId, body);
+
+        if (result === 400) {
+            res.json({
+                status: "error",
+                code: 400,
+                message: "missing fields",
+            });
+        }
+
+        if (result === 404) {
+            res.json({
+                status: "error",
+                code: 404,
+                message: "Not found",
+            });
+        }
+
+        if (result[1] === 200) {
+            res.json({
+                status: "success",
+                code: 200,
+                data: result[0],
+            });
+        }
+    } catch (error) {
+        console.error(error.message);
+    }
 });
 
-module.exports = router;
+export default router;
