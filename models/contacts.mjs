@@ -1,11 +1,7 @@
 import fs from "fs/promises";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "url";
+import { join } from "node:path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const contactsPath = resolve(__dirname, "./contacts.json");
+const contactsPath = join(process.cwd(), "/models/contacts.json");
 
 const digits = [];
 
