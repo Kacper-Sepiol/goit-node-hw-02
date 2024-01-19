@@ -2,6 +2,9 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import { router as contactsRouter } from "./routes/api/contacts.js";
+import "dotenv/config";
+import mongoose from "mongoose";
+import { Schema } from "mongoose";
 
 const app = express();
 
@@ -20,5 +23,38 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
     res.status(500).json({ message: err.message });
 });
+
+export const connection = mongoose.connect(process.env.URIDB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+
+connection
+    .then((conn) => {
+        console.log("Database connection successful");
+    })
+    .catch((error) => {
+        console.log("Datebase connection error");
+        process.exit(1);
+    });
+
+const contacts = new Schema({
+    name: {
+        type: String,
+        required: [true, "Set name for contact"],
+    },
+    email: {
+        type: String,
+    },
+    phone: {
+        type: String,
+    },
+    favorite: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+export const contact = mongoose.model("contact", contacts);
 
 export { app };
