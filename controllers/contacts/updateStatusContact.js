@@ -11,14 +11,16 @@ function updateStatusContact(req, res, next) {
                 contact
                     .updateOne({ _id: contactId }, { favorite: false })
                     .then((contacts) => {
-                        res.status(200).json({
+                        return res.status(200).json({
                             status: "success",
                             code: 200,
                             data: contacts,
                         });
                     })
                     .catch((error) => {
-                        res.status(500).json(`An error occurred: ${error}`);
+                        return res
+                            .status(500)
+                            .json(`An error occurred: ${error}`);
                     });
             }
 
@@ -26,18 +28,20 @@ function updateStatusContact(req, res, next) {
                 contact
                     .updateOne({ _id: contactId }, { favorite: true })
                     .then((contacts) => {
-                        res.status(200).json({
+                        return res.status(200).json({
                             status: "success",
                             code: 200,
                             data: contacts,
                         });
                     })
                     .catch((error) => {
-                        res.status(500).json(`An error occurred: ${error}`);
+                        return res
+                            .status(500)
+                            .json(`An error occurred: ${error}`);
                     });
             }
         } else {
-            res.status(400).json({
+            return res.status(400).json({
                 status: "error",
                 code: 400,
                 message: "missing field favorite",
