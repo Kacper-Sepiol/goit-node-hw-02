@@ -1,29 +1,28 @@
-import { addContact } from "../../models/contacts.mjs";
+import { contact } from "../../app.mjs";
+import { signUpValidation } from "#validators/signUpValidator.mjs";
 
-async function createContacts(req, res, next) {
-    const body = {
-        name: "Michal",
-        email: "",
-        phone: "6287468957968735763246",
-    };
+function createContacts(req, res, next) {
+    const { name, email, phone } = req.query;
 
-    try {
-        const contactAdded = await addContact(body);
+    const resultValidate = signUpValidation.validate(req.body);
 
-        if (contactAdded === 400) {
-            res.status(400).json({
-                message: "missing required name - field",
+    contact
+        .create({
+            name: name,
+            email: email,
+            phone: phone,
+            favorite: false,
+        })
+        .then((contacts) => {
+            return res.status(201).json({
+                status: "success",
+                code: 201,
+                data: contacts,
             });
-        }
-
-        if (contactAdded[1] === 201) {
-            res.status(201).json({
-                data: contactAdded[0],
-            });
-        }
-    } catch (error) {
-        res.status(500).json(`An error occurred: ${error}`);
-    }
+        })
+        .catch((error) => {
+            return res.status(500).json(`An error occurred: ${error}`);
+        });
 }
 
 export { createContacts };

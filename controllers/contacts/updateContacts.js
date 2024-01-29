@@ -1,35 +1,57 @@
-import { updateContact as update } from "../../models/contacts.mjs";
+import { contact } from "../../app.mjs";
 
-async function updateContact(req, res, next) {
+function updateContact(req, res, next) {
     const { contactId } = req.params;
+
+    // to do poprawy
     const body = {
-        name: "Michal",
-        email: "michalMichalinski@mail.com",
+        name: "ireneusz",
+        email: "ireneuszMichalinski@mail.com",
         phone: "",
     };
 
-    try {
-        const updatedContact = await update(contactId, body);
+    if (body.name === "" && body.email === "" && body.phone === "") {
+        return res.status(400).json({
+            status: "error",
+            code: 200,
+            message: "missing fields",
+        });
+    }
 
-        if (updatedContact === 400) {
-            res.status(400).json({
-                message: "missing fields",
+    if (body.name) {
+        contact
+            .updateOne({ _id: contactId }, { name: body.name })
+            .then((contacts) => {
+                return res.status(200).json({
+                    status: "success",
+                    code: 200,
+                    data: contacts,
+                });
             });
-        }
+    }
 
-        if (updatedContact === 404) {
-            res.status(404).json({
-                message: "Not found",
+    if (body.email) {
+        contact
+            .updateOne({ _id: contactId }, { email: body.email })
+            .then((contacts) => {
+                return res.status(200).json({
+                    status: "success",
+                    code: 200,
+                    data: contacts,
+                });
             });
-        }
+    }
 
-        if (updatedContact[1] === 200) {
-            res.status(200).json({
-                data: updatedContact[0],
+    if (body.phone) {
+        contact
+            .updateOne({ _id: contactId }, { phone: body.phone })
+            .then((contacts) => {
+                return res.status(200).json({
+                    status: "success",
+                    code: 200,
+                    data: contacts,
+                });
             });
-        }
-    } catch (error) {
-        res.status(500).json(`An error occurred: ${error}`);
     }
 }
 
