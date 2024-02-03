@@ -5,6 +5,9 @@ import { router as contactsRouter } from "./routes/api/contacts.js";
 import "dotenv/config";
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
+import passport from "passport";
+import "./config/config-passport.js";
+import bCrypt from "bcryptjs";
 
 const app = express();
 
@@ -14,6 +17,7 @@ app.use(morgan(formatsLogger));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(passport.initialize());
 
 app.use("/api/contacts", contactsRouter);
 
@@ -40,21 +44,33 @@ connection
     });
 
 const contacts = new Schema({
-    name: {
+    password: {
         type: String,
-        required: [true, "Set name for contact"],
+        required: [true, "Password is required"],
     },
     email: {
         type: String,
+        required: [true, "Email is required"],
+        unique: true,
     },
-    phone: {
+    subscription: {
         type: String,
+        enum: ["starter", "pro", "business"],
+        default: "starter",
     },
-    favorite: {
-        type: Boolean,
-        default: false,
+    token: {
+        type: String,
+        default: null,
     },
 });
+
+contacts.methods.setPassword = function (password) {
+    this.password = bCrypt.hashSync(password, bCrypt.genSaltSync(7));
+};
+
+contacts.methods.validPassword = function (password) {
+    return bCrypt.compareSync(password, this.password);
+};
 
 export const contact = mongoose.model("contact", contacts);
 
