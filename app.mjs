@@ -8,6 +8,7 @@ import { Schema } from "mongoose";
 import passport from "passport";
 import "./config/config-passport.js";
 import bCrypt from "bcryptjs";
+import gravatar from "gravatar";
 
 const app = express();
 
@@ -46,7 +47,7 @@ connection
 const contacts = new Schema({
     password: {
         type: String,
-        required: [true, "Password is required"],
+        required: [false, "Password is required"],
     },
     email: {
         type: String,
@@ -61,6 +62,9 @@ const contacts = new Schema({
     token: {
         type: String,
         default: null,
+    },
+    avatarURL: {
+        type: String,
     },
 });
 

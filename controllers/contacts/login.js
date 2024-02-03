@@ -1,6 +1,7 @@
 import { contact } from "../../app.mjs";
 import { signUpValidation } from "#validators/signUpValidator.mjs";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
 
 async function login(req, res, next) {
     const { email, password } = req.query;
@@ -29,6 +30,7 @@ async function login(req, res, next) {
         id: user.id,
         username: user.username,
         password: user.password,
+        avatarURL: gravatar.url(email),
     };
 
     const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "1h" });
