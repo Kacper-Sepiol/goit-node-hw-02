@@ -8,7 +8,6 @@ import { Schema } from "mongoose";
 import passport from "passport";
 import "./config/config-passport.js";
 import bCrypt from "bcryptjs";
-import gravatar from "gravatar";
 
 const app = express();
 

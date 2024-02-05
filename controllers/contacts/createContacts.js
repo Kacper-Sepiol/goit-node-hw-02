@@ -1,11 +1,17 @@
 import { contact } from "../../app.mjs";
 import { signUpValidation } from "#validators/signUpValidator.mjs";
-import gravatar from "gravatar";
 
 function createContacts(req, res, next) {
     const { name, email, phone } = req.query;
 
-    const resultValidate = signUpValidation.validate(req.body);
+    const { error, value } = signUpValidation.validate(req.body);
+
+    if (error) {
+        return res.status(400).json({
+            status: "Bad Request",
+            code: 400,
+        });
+    }
 
     contact
         .create({

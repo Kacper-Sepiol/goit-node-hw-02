@@ -1,16 +1,12 @@
 import { contact } from "../../app.mjs";
+import { signUpValidation } from "#validators/signUpValidator.mjs";
 
 function updateContact(req, res, next) {
     const { contactId } = req.params;
 
-    // to do poprawy
-    const body = {
-        name: "ireneusz",
-        email: "ireneuszMichalinski@mail.com",
-        phone: "",
-    };
+    const { error, value } = signUpValidation.validate(req.params);
 
-    if (body.name === "" && body.email === "" && body.phone === "") {
+    if (error) {
         return res.status(400).json({
             status: "error",
             code: 200,
