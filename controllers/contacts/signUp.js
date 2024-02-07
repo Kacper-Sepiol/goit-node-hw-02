@@ -1,6 +1,7 @@
 import { contact } from "../../app.mjs";
 import { signUpValidation } from "#validators/signUpValidator.mjs";
 import gravatar from "gravatar";
+import { nanoid } from "nanoid";
 
 async function signUp(req, res, next) {
     const { email, password } = req.query;
@@ -25,8 +26,15 @@ async function signUp(req, res, next) {
 
     const avatarURL = gravatar.url(email);
 
+    const verificationToken = nanoid();
+
     try {
-        const newUser = new contact({ email, password, avatarURL });
+        const newUser = new contact({
+            email,
+            password,
+            avatarURL,
+            verificationToken,
+        });
         newUser.setPassword(password);
         await newUser.save();
         return res.status(201).json({

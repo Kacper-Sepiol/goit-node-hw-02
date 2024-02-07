@@ -12,6 +12,8 @@ import { logout } from "#controllers/contacts/logout.js";
 import { current } from "#controllers/contacts/current.js";
 import { upload } from "../../multer/configMulter.js";
 import { updateAvatar } from "#controllers/contacts/updateAvatar.js";
+import { verificationToken } from "#controllers/contacts/verificationToken.js";
+import { verify } from "#controllers/contacts/verify.js";
 
 const router = express.Router();
 
@@ -26,5 +28,7 @@ router.post("/users/login", login);
 router.post("/users/logout", auth, logout);
 router.post("/users/current", auth, current);
 router.patch("/users/avatars", auth, upload.single("avatar"), updateAvatar);
+router.get("/users/verify/:verificationToken", verificationToken);
+router.post("/users/verify/", verify);
 
 export { router };
