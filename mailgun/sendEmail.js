@@ -14,7 +14,7 @@ function sendingEmail(email, token) {
         from: "kacperus0987654321@gmail.com",
         to: email,
         subject: "Hello",
-        text: `klikniej <a href=${link}>tutaj</a> aby zweryfikowac swoje konto`,
+        text: `<button style="background-color: red; border: 0; height: 30px; border-radius: 13px; color: white; font-weight: 700">klikniej <a href=${link}>Zweryfikuj swoje konto</a></button>`,
     };
 
     client.messages
